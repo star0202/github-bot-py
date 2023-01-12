@@ -61,6 +61,22 @@ class Dev(commands.Cog, command_attrs={"hidden": True}):
             embed.add_field(name="Error", value=f"```py\n{format_exc().splitlines()[-1]}```")
         await ctx.respond(embed=embed)
 
+    @slash_command()
+    @commands.is_owner()
+    async def encrypt(self, ctx: ApplicationContext, content: Option(str)):
+        embed = Embed(title="Encrypted!", color=COLOR)
+        embed.add_field(name="Content", value=f"```{content}```")
+        embed.add_field(name="Result", value=f"```{self.bot.crypt.encrypt(content)}```")
+        await ctx.respond(embed=embed)
+
+    @slash_command()
+    @commands.is_owner()
+    async def decrypt(self, ctx: ApplicationContext, content: Option(str)):
+        embed = Embed(title="Decrypted!", color=COLOR)
+        embed.add_field(name="Content", value=f"```{content}```")
+        embed.add_field(name="Result", value=f"```{self.bot.crypt.decrypt(content)}```")
+        await ctx.respond(embed=embed)
+
 
 def setup(bot):
     logger.info("Loaded")
