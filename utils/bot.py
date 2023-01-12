@@ -10,8 +10,8 @@ from discord.ext import commands  # noqa
 from config import BAD, STATUS
 from constants import OPTION_TYPES
 from utils.crypt import AESCipher
-from utils.logger import setup_logging
 from utils.database import Database
+from utils.logger import setup_logging
 
 
 class Bot(commands.Bot):  # noqa

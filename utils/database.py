@@ -1,5 +1,6 @@
-from aiosqlite import connect, Cursor
 from logging import Logger
+
+from aiosqlite import connect, Cursor
 
 
 class Database:

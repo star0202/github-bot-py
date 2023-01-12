@@ -3,8 +3,8 @@ from logging import getLogger
 from discord import ApplicationContext, Option, Embed  # noqa
 from discord.ext import commands  # noqa
 
-from utils.commands import slash_command
 from config import COLOR
+from utils.commands import slash_command
 
 logger = getLogger(__name__)
 
