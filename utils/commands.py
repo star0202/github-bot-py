@@ -1,4 +1,4 @@
-from discord.commands import SlashCommand, application_command  # noqa
+from discord.commands import SlashCommand, application_command
 
 from config import TEST_GUILD_ID
 

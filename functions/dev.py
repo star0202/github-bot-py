@@ -2,8 +2,8 @@ from aiosqlite import Error
 from logging import getLogger
 from traceback import format_exc
 
-from discord import ApplicationContext, Option, Embed  # noqa
-from discord.ext import commands  # noqa
+from discord import ApplicationContext, Option, Embed
+from discord.ext import commands
 
 from config import COLOR, BAD
 from utils.commands import slash_command

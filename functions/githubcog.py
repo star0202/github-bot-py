@@ -1,8 +1,8 @@
 from logging import getLogger
 
-from discord import ApplicationContext, Embed, Interaction, Option, ButtonStyle, PartialEmoji  # noqa
-from discord.ext import commands  # noqa
-from discord.ui import Modal, InputText, button, Button, View  # noqa
+from discord import ApplicationContext, Embed, Interaction, Option, ButtonStyle, PartialEmoji
+from discord.ext import commands
+from discord.ui import Modal, InputText, button, Button, View
 from github import Github
 from github.AuthenticatedUser import AuthenticatedUser
 from github.GithubException import UnknownObjectException
