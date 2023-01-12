@@ -1,9 +1,11 @@
+from aiosqlite import Error
 from logging import getLogger
+from traceback import format_exc
 
 from discord import ApplicationContext, Option, Embed  # noqa
 from discord.ext import commands  # noqa
 
-from config import COLOR
+from config import COLOR, BAD
 from utils.commands import slash_command
 
 logger = getLogger(__name__)
@@ -48,10 +50,15 @@ class Dev(commands.Cog, command_attrs={"hidden": True}):
     @slash_command()
     @commands.is_owner()
     async def sql(self, ctx: ApplicationContext, sql: Option(str)):
-        result = await self.bot.db.execute(sql)
-        embed = Embed(title="Executed!", color=COLOR)
-        embed.add_field(name="Script", value=f"```sql\n{sql}```")
-        embed.add_field(name="Result", value=f"```py\n{result}```")
+        try:
+            result = await self.bot.db.execute(sql)
+            embed = Embed(title="Executed!", color=COLOR)
+            embed.add_field(name="Script", value=f"```sql\n{sql}```")
+            embed.add_field(name="Result", value=f"```py\n{result}```")
+        except Error:
+            embed = Embed(title="SQL Error", color=BAD)
+            embed.add_field(name="Script", value=f"```sql\n{sql}```")
+            embed.add_field(name="Error", value=f"```py\n{format_exc().splitlines()[-1]}```")
         await ctx.respond(embed=embed)
 
 
