@@ -1,4 +1,4 @@
-from logging import Formatter, LogRecord, DEBUG, INFO, FileHandler, StreamHandler, ERROR, basicConfig
+from logging import basicConfig, DEBUG, ERROR, FileHandler, Formatter, INFO, LogRecord, StreamHandler
 from sys import argv
 
 from utils.utils import get_time
@@ -44,7 +44,7 @@ def setup_logging():
         StreamFormatter("%(asctime)s.%(msecs)03d %(levelname)s %(name)s: %(message)s", "%Y-%m-%d %H:%M:%S", "%"))
     handler.setLevel(level)
     errorhandler = FileHandler(f"errors/error-{today.strftime('%Y-%m-%d-%H-%M-%S')}.log", "a", "utf-8",
-                                       delay=True)
+                               delay=True)
     errorhandler.setLevel(ERROR)
     basicConfig(
         format="%(asctime)s.%(msecs)03d %(levelname)-8s %(name)-22s: %(message)s",

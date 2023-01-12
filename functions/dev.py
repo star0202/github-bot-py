@@ -2,10 +2,10 @@ from logging import getLogger
 from traceback import format_exc
 
 from aiosqlite import Error
-from discord import ApplicationContext, Option, Embed
+from discord import ApplicationContext, Embed, Option
 from discord.ext import commands
 
-from config import COLOR, BAD
+from config import BAD, COLOR
 from utils.commands import slash_command
 
 logger = getLogger(__name__)

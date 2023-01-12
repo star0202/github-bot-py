@@ -1,15 +1,15 @@
 from logging import getLogger
 
-from discord import ApplicationContext, Embed, Interaction, Option, ButtonStyle, PartialEmoji
+from discord import ApplicationContext, ButtonStyle, Embed, Interaction, Option, PartialEmoji
 from discord.ext import commands
-from discord.ui import Modal, InputText, button, Button, View
+from discord.ui import button, Button, InputText, Modal, View
 from github import Github
 from github.AuthenticatedUser import AuthenticatedUser
 from github.GithubException import UnknownObjectException
 from github.NamedUser import NamedUser
 from github.Repository import Repository
 
-from config import COLOR, BAD
+from config import BAD, COLOR
 from utils.bot import Bot
 from utils.commands import slash_command
 

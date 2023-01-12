@@ -3,10 +3,10 @@ from logging import getLogger
 from discord import Embed, Interaction
 from discord.commands import ApplicationContext
 from discord.ext import commands
-from discord.ui import View, select
+from discord.ui import select, View
 
 from config import COLOR
-from constants import HELP_SELECT_RAW, HELP_EMBED_RAW
+from constants import HELP_EMBED_RAW, HELP_SELECT_RAW
 from utils.commands import slash_command
 from utils.utils import help_maker
 
