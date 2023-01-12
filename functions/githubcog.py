@@ -91,8 +91,10 @@ class GithubCog(commands.Cog):
         if data:
             token = await self.bot.crypt.decrypt(data[1])
             github = Github(token)
+            view = UserControl(github.get_user(), github.get_user(user_id))
         else:
             github = Github()
+            view = None
         user = github.get_user_by_id(github.get_user(user_id).id)
         embed = Embed(title="유저 정보", color=COLOR)
         embed.set_thumbnail(url=user.avatar_url)
@@ -100,9 +102,7 @@ class GithubCog(commands.Cog):
         embed.add_field(name="팔로워 / 팔로잉", value=f"{user.followers} / {user.following}")
         embed.add_field(name="공개 레포지토리", value=f"{user.public_repos}개")
         embed.add_field(name="소개", value=f"{user.bio}")
-        await ctx.respond(
-            embed=embed, view=UserControl(github.get_user(), user)
-        ) if data and github.get_user().id != user.id else await ctx.respond(embed=embed)
+        await ctx.respond(embed=embed, view=view)
 
 
 def setup(bot):
