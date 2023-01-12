@@ -12,7 +12,7 @@ class Database:
         self = Database()
         self.path = path
         self.conn = await connect(self.path, isolation_level=None)
-        await self.conn.set_trace_callback(logger.debug)
+        await self.conn.set_trace_callback(logger.info)
         self.cursor = await self.conn.cursor()
         return self
 
