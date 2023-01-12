@@ -66,7 +66,7 @@ class Dev(commands.Cog, command_attrs={"hidden": True}):
     async def encrypt(self, ctx: ApplicationContext, content: Option(str)):
         embed = Embed(title="Encrypted!", color=COLOR)
         embed.add_field(name="Content", value=f"```{content}```")
-        embed.add_field(name="Result", value=f"```{self.bot.crypt.encrypt(content)}```")
+        embed.add_field(name="Result", value=f"```{await self.bot.crypt.encrypt(content)}```")
         await ctx.respond(embed=embed)
 
     @slash_command()
@@ -74,7 +74,7 @@ class Dev(commands.Cog, command_attrs={"hidden": True}):
     async def decrypt(self, ctx: ApplicationContext, content: Option(str)):
         embed = Embed(title="Decrypted!", color=COLOR)
         embed.add_field(name="Content", value=f"```{content}```")
-        embed.add_field(name="Result", value=f"```{self.bot.crypt.decrypt(content)}```")
+        embed.add_field(name="Result", value=f"```{await self.bot.crypt.decrypt(content)}```")
         await ctx.respond(embed=embed)
 
 
