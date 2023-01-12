@@ -1,6 +1,6 @@
 from logging import getLogger
 
-from discord import ApplicationContext, Embed, Interaction, Option, ButtonStyle  # noqa
+from discord import ApplicationContext, Embed, Interaction, Option, ButtonStyle, PartialEmoji  # noqa
 from discord.ext import commands  # noqa
 from discord.ui import Modal, InputText, button, Button, View  # noqa
 from github import Github
@@ -49,10 +49,32 @@ class UserControl(View):
     async def follow(self, _, interaction: Interaction):
         if self.user in self.me.get_following():
             self.me.remove_from_following(self.user)
-            await interaction.response.send_message("팔로우 취소됨", ephemeral=True)
+            await interaction.response.send_message("팔로우 취소!", ephemeral=True)
         else:
             self.me.add_to_following(self.user)
-            await interaction.response.send_message("팔로우됨", ephemeral=True)
+            await interaction.response.send_message("팔로우!", ephemeral=True)
+
+
+class RepoControl(View):
+    def __init__(self, me: AuthenticatedUser, repo: Repository):
+        super().__init__(timeout=60)
+        self.me = me
+        self.repo = repo
+        self.add_item(Button(label="🔗", url=repo.html_url, style=ButtonStyle.url))
+
+    @button(emoji=PartialEmoji(name="fork", id=1063066537075953684), style=ButtonStyle.blurple)
+    async def fork(self, _, interaction: Interaction):
+        url = self.me.create_fork(self.repo).html_url
+        await interaction.response.send_message(f"포크 완료!\n<{url}>", ephemeral=True)
+
+    @button(label="⭐", style=ButtonStyle.green)
+    async def star(self, _, interaction: Interaction):
+        if self.repo in self.me.get_starred():
+            self.me.remove_from_starred(self.repo)
+            await interaction.response.send_message("스타 취소!", ephemeral=True)
+        else:
+            self.me.add_to_starred(self.repo)
+            await interaction.response.send_message("스타!", ephemeral=True)
 
 
 class GithubCog(commands.Cog):
@@ -127,16 +149,26 @@ class GithubCog(commands.Cog):
         if data:
             token = await self.bot.crypt.decrypt(data[1])
             github = Github(token)
+            view = RepoControl(github.get_user(), github.get_repo(f"{repo_owner}/{repo_name}"))
         else:
             github = Github()
             view = RegisterRecommend(self.bot)
         repo = github.get_repo(f"{repo_owner}/{repo_name}")
         embed = Embed(title="레포 정보", color=COLOR)
         embed.add_field(name="이름", value=f"{repo.name}([{repo.owner.login}]({repo.html_url}))")
-        embed.add_field(name="언어", value=repo.language)
+        embed.add_field(name="언어", value=repo.language
+                        ) if repo.language else embed.add_field(name="언어", value="알 수 없음")
         embed.add_field(name="설명", value=repo.description)
         embed.add_field(name="스타", value=f"{repo.stargazers_count}개")
-        await ctx.respond(embed=embed)
+        embed.add_field(name="포크", value=f"{repo.forks_count}개")
+        embed.add_field(name="PR", value=f"{len(list(repo.get_pulls()))}개")
+        embed.add_field(name="이슈", value=f"{repo.open_issues_count}개")
+        try:
+            license_name = repo.get_license().license.name
+        except UnknownObjectException:
+            license_name = "없음"
+        embed.add_field(name="라이선스", value=license_name)
+        await ctx.respond(embed=embed, view=view)
 
 
 def setup(bot):
