@@ -1,6 +1,6 @@
 from logging import getLogger
 
-from discord import ApplicationContext, Embed, Interaction  # noqa
+from discord import ApplicationContext, Embed, Interaction, Option  # noqa
 from discord.ext import commands  # noqa
 from discord.ui import Modal, InputText  # noqa
 from github import Github
@@ -56,11 +56,26 @@ class GithubCog(commands.Cog):
             user = github.get_user()
             embed = Embed(
                 title="연동된 계정",
-                description=f"**{user.name}([{user.login}](https://github.com/{user.login}))**",
+                description=f"{user.name}([{user.login}]({user.html_url}))",
                 color=COLOR
             )
         else:
             embed = Embed(title="오류", description="연동된 계정이 없습니다. 연동을 하려면 `/연동`을 입력해주세요.", color=BAD)
+        await ctx.respond(embed=embed)
+
+    @slash_command(name="유저", description="깃허브 유저 정보를 확인합니다.")
+    async def user_info(
+            self, ctx: ApplicationContext, user_id: Option(
+                str, name="아이디", description="확인할 유저의 아이디를 입력해주세요.")
+    ):
+        github = Github()
+        user = github.get_user(user_id)
+        embed = Embed(title="유저 정보", color=COLOR)
+        embed.set_thumbnail(url=user.avatar_url)
+        embed.add_field(name="이름", value=f"{user.name}([{user.login}]({user.html_url}))")
+        embed.add_field(name="팔로워 / 팔로잉", value=f"{user.followers} / {user.following}")
+        embed.add_field(name="공개 레포지토리", value=f"{user.public_repos}개")
+        embed.add_field(name="소개", value=f"{user.bio}")
         await ctx.respond(embed=embed)
 
 
