@@ -4,3 +4,4 @@ python-dotenv~=0.21.0
 pytz~=2022.6
 pycryptodome~=3.16.0
 aiosqlite~=0.18.0
+PyGithub~=1.57
