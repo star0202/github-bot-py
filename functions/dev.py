@@ -1,9 +1,10 @@
 from logging import getLogger
 
-from discord import ApplicationContext, Option  # noqa
+from discord import ApplicationContext, Option, Embed  # noqa
 from discord.ext import commands  # noqa
 
 from utils.commands import slash_command
+from config import COLOR
 
 logger = getLogger(__name__)
 
@@ -44,6 +45,14 @@ class Dev(commands.Cog, command_attrs={"hidden": True}):
             await ctx.send(content)
             delete_this = await ctx.respond("random respond")
             await delete_this.delete_original_response()
+
+    @slash_command()
+    async def sql(self, ctx: ApplicationContext, sql: Option(str)):
+        result = await self.bot.db.execute(sql)
+        embed = Embed(title="Executed!", color=COLOR)
+        embed.add_field(name="Script", value=f"```sql\n{sql}```")
+        embed.add_field(name="Result", value=f"```py\n{result}```")
+        await ctx.respond(embed=embed)
 
 
 def setup(bot):
