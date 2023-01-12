@@ -99,10 +99,32 @@ class GithubCog(commands.Cog):
         embed = Embed(title="유저 정보", color=COLOR)
         embed.set_thumbnail(url=user.avatar_url)
         embed.add_field(name="이름", value=f"{user.name}([{user.login}]({user.html_url}))")
-        embed.add_field(name="팔로워 / 팔로잉", value=f"{user.followers} / {user.following}")
+        embed.add_field(name="팔로워 / 팔로잉", value=f"{user.followers} / {user.following}(명)")
         embed.add_field(name="공개 레포지토리", value=f"{user.public_repos}개")
         embed.add_field(name="소개", value=user.bio)
         await ctx.respond(embed=embed, view=view)
+
+    @slash_command(name="레포", description="깃허브 레포 정보를 확인합니다.")
+    async def repo_info(
+            self, ctx: ApplicationContext,
+            repo_owner: Option(
+                str, name="소속", description="확인할 레포의 소속을 입력해주세요."),
+            repo_name: Option(
+                str, name="이름", description="확인할 레포의 이름을 입력해주세요.")
+    ):
+        data = await self.bot.db.select("User", ctx.user.id)
+        if data:
+            token = await self.bot.crypt.decrypt(data[1])
+            github = Github(token)
+        else:
+            github = Github()
+        repo = github.get_repo(f"{repo_owner}/{repo_name}")
+        embed = Embed(title="레포 정보", color=COLOR)
+        embed.add_field(name="이름", value=f"{repo.name}([{repo.owner.login}]({repo.html_url}))")
+        embed.add_field(name="언어", value=repo.language)
+        embed.add_field(name="설명", value=repo.description)
+        embed.add_field(name="스타", value=f"{repo.stargazers_count}개")
+        await ctx.respond(embed=embed)
 
 
 def setup(bot):
