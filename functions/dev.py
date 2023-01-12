@@ -1,7 +1,7 @@
-from aiosqlite import Error
 from logging import getLogger
 from traceback import format_exc
 
+from aiosqlite import Error
 from discord import ApplicationContext, Option, Embed
 from discord.ext import commands
 
