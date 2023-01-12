@@ -41,7 +41,7 @@ class Bot(commands.Bot):  # noqa
 
     async def on_ready(self):
         self.db = await Database.create(getenv("DATABASE"), self.logger)
-        await self.db.execute("CREATE TABLE IF NOT EXISTS User(id INTEGER, key TEXT)")
+        await self.db.execute("CREATE TABLE IF NOT EXISTS User(id INTEGER, key BLOB)")
         self.logger.info(f"Logged in as {self.user.name}")
         self.logger.info(f"Session ID: {self.session}")
         await self.change_presence(
