@@ -12,7 +12,6 @@ logger = getLogger(__name__)
 class Dev(commands.Cog, command_attrs={"hidden": True}):
     def __init__(self, bot):
         self.bot = bot
-        self.jishaku = bot.get_cog("jishaku")
 
     @slash_command()
     async def stop(self, ctx: ApplicationContext):
