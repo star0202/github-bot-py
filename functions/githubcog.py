@@ -101,7 +101,7 @@ class GithubCog(commands.Cog):
         embed.add_field(name="이름", value=f"{user.name}([{user.login}]({user.html_url}))")
         embed.add_field(name="팔로워 / 팔로잉", value=f"{user.followers} / {user.following}")
         embed.add_field(name="공개 레포지토리", value=f"{user.public_repos}개")
-        embed.add_field(name="소개", value=f"{user.bio}")
+        embed.add_field(name="소개", value=user.bio)
         await ctx.respond(embed=embed, view=view)
 
 
