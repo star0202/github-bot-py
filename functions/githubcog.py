@@ -1,13 +1,14 @@
 from logging import getLogger
 
-from discord import ApplicationContext, Option
+from discord import ApplicationContext, Embed, Option
 from discord.ext import commands
 from github import Github
 from github.GithubException import UnknownObjectException
 
-from config import BAD
+from config import BAD, COLOR
+from utils.bot import Bot
 from utils.commands import slash_command
-from views.githubview import *
+from views.githubview import RegisterModal, RegisterRecommend, RepoControl, UserControl
 
 logger = getLogger(__name__)
 

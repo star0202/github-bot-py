@@ -4,8 +4,9 @@ from discord import Embed
 from discord.commands import ApplicationContext
 from discord.ext import commands
 
+from config import COLOR
 from utils.commands import slash_command
-from views.help import *
+from views.help import HelpMenu
 
 logger = getLogger(__name__)
 
