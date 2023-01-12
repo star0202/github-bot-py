@@ -1,8 +1,9 @@
 from logging import getLogger
 
-import discord
+from discord import Embed, Interaction
 from discord.commands import ApplicationContext
 from discord.ext import commands
+from discord.ui import View, select
 
 from config import COLOR
 from constants import HELP_SELECT_RAW, HELP_EMBED_RAW
@@ -16,19 +17,19 @@ help_select = help_maker(HELP_SELECT_RAW, COLOR, False)
 help_embed = help_maker(HELP_EMBED_RAW, COLOR)
 
 
-class HelpMenu(discord.ui.View):
+class HelpMenu(View):
     def __init__(self):
         super().__init__(timeout=60)
 
-    @discord.ui.select(placeholder="명령어를 선택하세요", options=help_select)
-    async def callback(self, select, interaction: discord.Interaction):
-        await interaction.response.edit_message(embed=help_embed[help_list.index(select.values[0])], view=self)
+    @select(placeholder="명령어를 선택하세요", options=help_select)
+    async def callback(self, slt, interaction: Interaction):
+        await interaction.response.edit_message(embed=help_embed[help_list.index(slt.values[0])], view=self)
 
 
 class Help(commands.Cog):
     @slash_command(name="도움말", description="도움말을 출력합니다.")
     async def help(self, ctx: ApplicationContext):
-        embed = discord.Embed(title="도움말", description="메뉴에서 원하는 명령어를 선택하세요.", color=COLOR)
+        embed = Embed(title="도움말", description="메뉴에서 원하는 명령어를 선택하세요.", color=COLOR)
         embed.add_field(name="참고사항", value="`[입력값]` : 필수 입력값  |  `(입력값)` : 선택 입력값")
         await ctx.respond(embed=embed, view=HelpMenu())
 
