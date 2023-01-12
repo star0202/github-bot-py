@@ -27,6 +27,17 @@ class RegisterModal(Modal):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
+class RegisterRecommend(View):
+    def __init__(self, bot: Bot):
+        super().__init__(timeout=60)
+        self.bot = bot
+        self.id = self.bot.get_application_command('연동').id
+
+    @button(label="계정 연동하기", style=ButtonStyle.primary)
+    async def register(self, _, interaction: Interaction):
+        await interaction.response.edit_message(content=f"</연동:{self.id}>", embed=None)
+
+
 class UserControl(View):
     def __init__(self, me: AuthenticatedUser, user: NamedUser):
         super().__init__(timeout=60)
@@ -94,7 +105,7 @@ class GithubCog(commands.Cog):
             view = UserControl(github.get_user(), github.get_user(user_id))
         else:
             github = Github()
-            view = None
+            view = RegisterRecommend(self.bot)
         user = github.get_user_by_id(github.get_user(user_id).id)
         embed = Embed(title="유저 정보", color=COLOR)
         embed.set_thumbnail(url=user.avatar_url)
@@ -118,6 +129,7 @@ class GithubCog(commands.Cog):
             github = Github(token)
         else:
             github = Github()
+            view = RegisterRecommend(self.bot)
         repo = github.get_repo(f"{repo_owner}/{repo_name}")
         embed = Embed(title="레포 정보", color=COLOR)
         embed.add_field(name="이름", value=f"{repo.name}([{repo.owner.login}]({repo.html_url}))")
