@@ -21,7 +21,7 @@ class Bot(commands.Bot):
         self.logger = getLogger(__name__)
         self.start_time = time()
         self.session = uuid4()
-        self.crypt = AESCipher(getenv("AES_KEY"))
+        self.crypt = AESCipher(getenv("TOKEN"))
         self.db = Database
         for filename in listdir("functions"):
             if filename.endswith(".py"):
