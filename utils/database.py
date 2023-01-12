@@ -21,7 +21,7 @@ class Database:
 
     async def select(self, table: str, value_id: int):
         await self.cursor.execute(f"SELECT * FROM {table} WHERE id={value_id}")
-        return await self.cursor.fetchall()
+        return await self.cursor.fetchone()
 
     async def update(self, table: str, value_id: int, value: tuple):
         await self.cursor.execute(f"UPDATE {table} SET {value} WHERE id={value_id}")
@@ -31,4 +31,4 @@ class Database:
 
     async def execute(self, sql: str):
         await self.cursor.execute(sql)
-        return await self.cursor.fetchall()
+        return await self.cursor.fetchone()
