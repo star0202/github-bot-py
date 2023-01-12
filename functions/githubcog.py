@@ -1,9 +1,11 @@
 from logging import getLogger
 
-from discord import ApplicationContext, Embed, Interaction, Option  # noqa
+from discord import ApplicationContext, Embed, Interaction, Option, ButtonStyle  # noqa
 from discord.ext import commands  # noqa
-from discord.ui import Modal, InputText  # noqa
+from discord.ui import Modal, InputText, button, Button, View  # noqa
 from github import Github
+from github.AuthenticatedUser import AuthenticatedUser
+from github.NamedUser import NamedUser
 
 from config import COLOR, BAD
 from utils.bot import Bot
@@ -23,6 +25,23 @@ class RegisterModal(Modal):
         await self.bot.db.insert("User", (interaction.user.id, str(token)))
         embed = Embed(title="성공", description="Github 계정이 연동되었습니다!", color=COLOR)
         await interaction.response.send_message(embed=embed, ephemeral=True)
+
+
+class UserControl(View):
+    def __init__(self, me: AuthenticatedUser, user: NamedUser):
+        super().__init__(timeout=60)
+        self.me = me
+        self.user = user
+        self.add_item(Button(label="🔗", url=user.html_url, style=ButtonStyle.url))
+
+    @button(label="💜", style=ButtonStyle.red)
+    async def follow(self, _, interaction: Interaction):
+        if self.user in self.me.get_following():
+            self.me.remove_from_following(self.user)
+            await interaction.response.send_message("팔로우 취소됨", ephemeral=True)
+        else:
+            self.me.add_to_following(self.user)
+            await interaction.response.send_message("팔로우됨", ephemeral=True)
 
 
 class GithubCog(commands.Cog):
@@ -68,15 +87,22 @@ class GithubCog(commands.Cog):
             self, ctx: ApplicationContext, user_id: Option(
                 str, name="아이디", description="확인할 유저의 아이디를 입력해주세요.")
     ):
-        github = Github()
-        user = github.get_user(user_id)
+        data = await self.bot.db.select("User", ctx.user.id)
+        if data:
+            token = await self.bot.crypt.decrypt(data[1])
+            github = Github(token)
+        else:
+            github = Github()
+        user = github.get_user_by_id(github.get_user(user_id).id)
         embed = Embed(title="유저 정보", color=COLOR)
         embed.set_thumbnail(url=user.avatar_url)
         embed.add_field(name="이름", value=f"{user.name}([{user.login}]({user.html_url}))")
         embed.add_field(name="팔로워 / 팔로잉", value=f"{user.followers} / {user.following}")
         embed.add_field(name="공개 레포지토리", value=f"{user.public_repos}개")
         embed.add_field(name="소개", value=f"{user.bio}")
-        await ctx.respond(embed=embed)
+        await ctx.respond(
+            embed=embed, view=UserControl(github.get_user(), user)
+        ) if data and github.get_user().id != user.id else await ctx.respond(embed=embed)
 
 
 def setup(bot):
