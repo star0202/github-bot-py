@@ -81,7 +81,3 @@ class Dev(commands.Cog, command_attrs={"hidden": True}):
 def setup(bot):
     logger.info("Loaded")
     bot.add_cog(Dev(bot))
-
-
-def teardown():
-    logger.info("Unloaded")

@@ -36,7 +36,3 @@ class Help(commands.Cog):
 def setup(bot):
     logger.info("Loaded")
     bot.add_cog(Help(bot))
-
-
-def teardown():
-    logger.info("Unloaded")

@@ -54,7 +54,3 @@ class Default(commands.Cog):
 def setup(bot):
     logger.info("Loaded")
     bot.add_cog(Default(bot))
-
-
-def teardown():
-    logger.info("Unloaded")

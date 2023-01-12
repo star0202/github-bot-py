@@ -67,7 +67,3 @@ class GithubCog(commands.Cog):
 def setup(bot):
     logger.info("Loaded")
     bot.add_cog(GithubCog(bot))
-
-
-def teardown():
-    logger.info("Unloaded")
