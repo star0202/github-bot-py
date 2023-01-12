@@ -3,6 +3,7 @@ from logging import getLogger
 from discord import ApplicationContext, Embed, Interaction  # noqa
 from discord.ext import commands  # noqa
 from discord.ui import Modal, InputText  # noqa
+from github import Github
 
 from config import COLOR, BAD
 from utils.bot import Bot
@@ -20,11 +21,12 @@ class RegisterModal(Modal):
     async def callback(self, interaction: Interaction):
         token = await self.bot.crypt.encrypt(self.children[0].value)
         await self.bot.db.insert("User", (interaction.user.id, str(token)))
-        await interaction.response.send_message("Github 계정이 연동되었습니다!", ephemeral=True)
+        embed = Embed(title="성공", description="Github 계정이 연동되었습니다!", color=COLOR)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 class GithubCog(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
 
     @slash_command(name="연동", description="토큰을 사용해 깃허브 계정을 연동합니다.")
@@ -44,6 +46,22 @@ class GithubCog(commands.Cog):
         await self.bot.db.delete("User", ctx.user.id)
         embed = Embed(title="성공", description="Github 계정 연동이 해제되었습니다.", color=COLOR)
         await ctx.respond(embed=embed, ephemeral=True)
+
+    @slash_command(name="연동정보", description="깃허브 계정 연동 정보를 확인합니다.")
+    async def info(self, ctx: ApplicationContext):
+        data = await self.bot.db.select("User", ctx.user.id)
+        if data:
+            token = await self.bot.crypt.decrypt(data[1])
+            github = Github(token)
+            user = github.get_user()
+            embed = Embed(
+                title="연동된 계정",
+                description=f"**{user.name}([{user.login}](https://github.com/{user.login}))**",
+                color=COLOR
+            )
+        else:
+            embed = Embed(title="오류", description="연동된 계정이 없습니다. 연동을 하려면 `/연동`을 입력해주세요.", color=BAD)
+        await ctx.respond(embed=embed)
 
 
 def setup(bot):
