@@ -18,27 +18,27 @@ class Dev(commands.Cog, command_attrs={"hidden": True}):
     @slash_command()
     @commands.is_owner()
     async def stop(self, ctx: ApplicationContext):
-        await ctx.respond("stopping..")
+        await ctx.respond("stopping..", ephemeral=True)
         await self.bot.close()
 
     @slash_command()
     @commands.is_owner()
     async def load_ext(self, ctx: ApplicationContext, ext_name: Option(str)):
         self.bot.load_extension(f"functions.{ext_name}")
-        await ctx.respond(f"{ext_name}.py loaded")
+        await ctx.respond(f"{ext_name}.py loaded", ephemeral=True)
 
     @slash_command()
     @commands.is_owner()
     async def unload_ext(self, ctx: ApplicationContext, ext_name: Option(str)):
         self.bot.unload_extension(f"functions.{ext_name}")
-        await ctx.respond(f"{ext_name}.py loaded")
+        await ctx.respond(f"{ext_name}.py loaded", ephemeral=True)
 
     @slash_command()
     @commands.is_owner()
     async def reload_ext(self, ctx: ApplicationContext, ext_name: Option(str)):
         self.bot.unload_extension(f"functions.{ext_name}")
         self.bot.load_extension(f"functions.{ext_name}")
-        await ctx.respond(f"{ext_name}.py reloaded")
+        await ctx.respond(f"{ext_name}.py reloaded", ephemeral=True)
 
     @slash_command()
     @commands.is_owner()
@@ -59,7 +59,7 @@ class Dev(commands.Cog, command_attrs={"hidden": True}):
             embed = Embed(title="SQL Error", color=BAD)
             embed.add_field(name="Script", value=f"```sql\n{sql}```")
             embed.add_field(name="Error", value=f"```py\n{format_exc().splitlines()[-1]}```")
-        await ctx.respond(embed=embed)
+        await ctx.respond(embed=embed, ephemeral=True)
 
     @slash_command()
     @commands.is_owner()
@@ -67,7 +67,7 @@ class Dev(commands.Cog, command_attrs={"hidden": True}):
         embed = Embed(title="Encrypted!", color=COLOR)
         embed.add_field(name="Content", value=f"```{content}```")
         embed.add_field(name="Result", value=f"```{await self.bot.crypt.encrypt(content)}```")
-        await ctx.respond(embed=embed)
+        await ctx.respond(embed=embed, ephemeral=True)
 
     @slash_command()
     @commands.is_owner()
@@ -75,7 +75,7 @@ class Dev(commands.Cog, command_attrs={"hidden": True}):
         embed = Embed(title="Decrypted!", color=COLOR)
         embed.add_field(name="Content", value=f"```{content}```")
         embed.add_field(name="Result", value=f"```{await self.bot.crypt.decrypt(content)}```")
-        await ctx.respond(embed=embed)
+        await ctx.respond(embed=embed, ephemeral=True)
 
 
 def setup(bot):
