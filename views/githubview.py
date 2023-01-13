@@ -2,8 +2,7 @@ from discord import ButtonStyle, Embed, Interaction, PartialEmoji
 from discord.ui import button, Button, InputText, Modal, View
 from github import Github
 from github.AuthenticatedUser import AuthenticatedUser
-from github.GithubException import GithubException
-from github.GithubException import BadCredentialsException
+from github.GithubException import BadCredentialsException, GithubException
 from github.NamedUser import NamedUser
 from github.Repository import Repository
 
