@@ -1,11 +1,13 @@
 from logging import Logger
 
-from aiosqlite import connect, Cursor
+from aiosqlite import connect, Cursor, Connection
 
 
 class Database:
     def __init__(self):
+        self.path: str
         self.cursor = Cursor
+        self.conn: Connection
 
     @classmethod
     async def create(cls, path: str, logger: Logger):

@@ -6,6 +6,7 @@ from uuid import uuid4
 
 from discord import ApplicationContext, DiscordException, Embed, ExtensionFailed, Game, Intents, Status
 from discord.ext import commands
+from discord.ext.commands import Context
 
 from config import BAD, STATUS
 from constants import OPTION_TYPES
@@ -50,7 +51,7 @@ class Bot(commands.Bot):
         )
         await self.wait_until_ready()
 
-    async def on_command_error(self, ctx: ApplicationContext, error: DiscordException):
+    async def on_command_error(self, ctx: ApplicationContext | Context, error: DiscordException):
         if hasattr(ctx.command, "on_error"):
             return
         text = "".join(format_exception(error))
