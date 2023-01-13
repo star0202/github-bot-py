@@ -14,7 +14,7 @@ def datetime_to_unix(n: datetime) -> int:
     return int(mktime(n.timetuple()))
 
 
-def help_maker(raw: Dict, color: int, is_embed: Optional[bool] = True) -> List[Union[Embed, SelectOption]]:
+def help_maker(raw: Dict, color: int, is_embed: Optional[bool] = True) -> List[Embed] | List[SelectOption]:
     embed_list = []
     for title in raw:
         embed_list.append(
