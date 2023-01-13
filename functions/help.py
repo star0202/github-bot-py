@@ -7,6 +7,7 @@ from discord.ext import commands
 from config import COLOR
 from utils.commands import slash_command
 from views.help import HelpMenu
+from utils.bot import Bot
 
 logger = getLogger(__name__)
 
