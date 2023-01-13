@@ -33,6 +33,7 @@ class RequireRegisterView(View):
     def __init__(self, bot: Bot, me: AuthenticatedUser):
         super().__init__(timeout=60)
         self.bot = bot
+        self.me = me
         try:
             self.login = bool(me.login)
         except GithubException:
@@ -49,7 +50,6 @@ class RequireRegisterView(View):
 class UserControl(RequireRegisterView):
     def __init__(self, bot: Bot, me: AuthenticatedUser, user: NamedUser):
         super().__init__(bot, me)
-        self.me = me
         self.user = user
         self.add_item(Button(label="🔗", url=user.html_url, style=ButtonStyle.url))
 
@@ -70,7 +70,6 @@ class UserControl(RequireRegisterView):
 class RepoControl(RequireRegisterView):
     def __init__(self, bot: Bot, me: AuthenticatedUser, repo: Repository):
         super().__init__(bot, me)
-        self.me = me
         self.repo = repo
         self.add_item(Button(label="🔗", url=repo.html_url, style=ButtonStyle.url))
 
