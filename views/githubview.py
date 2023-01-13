@@ -30,7 +30,7 @@ class RegisterModal(Modal):
 
 
 class RequireRegisterView(View):
-    def __init__(self, bot: Bot, me: AuthenticatedUser | NamedUser):
+    def __init__(self, bot: Bot, me: AuthenticatedUser):
         super().__init__(timeout=60)
         self.bot = bot
         print(type(me))
@@ -49,7 +49,7 @@ class RequireRegisterView(View):
 
 
 class UserControl(RequireRegisterView):
-    def __init__(self, bot: Bot, me: AuthenticatedUser | NamedUser, user: NamedUser):
+    def __init__(self, bot: Bot, me: AuthenticatedUser, user: NamedUser):
         super().__init__(bot, me)
         self.me = me
         self.user = user
@@ -70,7 +70,7 @@ class UserControl(RequireRegisterView):
 
 
 class RepoControl(RequireRegisterView):
-    def __init__(self, bot: Bot, me: AuthenticatedUser | NamedUser, repo: Repository):
+    def __init__(self, bot: Bot, me: AuthenticatedUser, repo: Repository):
         super().__init__(bot, me)
         self.me = me
         self.repo = repo
