@@ -33,8 +33,6 @@ class RequireRegisterView(View):
     def __init__(self, bot: Bot, me: AuthenticatedUser):
         super().__init__(timeout=60)
         self.bot = bot
-        print(type(me))
-        print()
         try:
             self.login = bool(me.login)
         except GithubException:
