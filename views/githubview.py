@@ -3,6 +3,7 @@ from discord.ui import button, Button, InputText, Modal, View
 from github import Github
 from github.AuthenticatedUser import AuthenticatedUser
 from github.GithubException import GithubException
+from github.GithubException import BadCredentialsException
 from github.NamedUser import NamedUser
 from github.Repository import Repository
 
@@ -25,7 +26,7 @@ class RegisterModal(Modal):
             token_encrypted = await self.bot.crypt.encrypt(self.children[0].value)
             await self.bot.db.insert("User", (interaction.user.id, str(token_encrypted)))
             await interaction.response.send_message(embed=embed, ephemeral=True)
-        except GithubException:
+        except BadCredentialsException:
             await interaction.response.send_message("잘못된 토큰입니다.", ephemeral=True)
 
 
