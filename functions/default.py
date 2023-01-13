@@ -51,6 +51,6 @@ class Default(commands.Cog):
         await ctx.respond(embed=embed)
 
 
-def setup(bot):
+def setup(bot: Bot):
     logger.info("Loaded")
     bot.add_cog(Default(bot))

@@ -78,6 +78,6 @@ class Dev(commands.Cog, command_attrs={"hidden": True}):
         await ctx.respond(embed=embed, ephemeral=True)
 
 
-def setup(bot):
+def setup(bot: Bot):
     logger.info("Loaded")
     bot.add_cog(Dev(bot))

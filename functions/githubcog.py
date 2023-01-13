@@ -105,6 +105,6 @@ class GithubCog(commands.Cog):
         await ctx.respond(embed=embed, view=view)
 
 
-def setup(bot):
+def setup(bot: Bot):
     logger.info("Loaded")
     bot.add_cog(GithubCog(bot))

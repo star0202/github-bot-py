@@ -19,6 +19,6 @@ class Help(commands.Cog):
         await ctx.respond(embed=embed, view=HelpMenu())
 
 
-def setup(bot):
+def setup(bot: Bot):
     logger.info("Loaded")
     bot.add_cog(Help(bot))
