@@ -2,6 +2,7 @@ from discord import ButtonStyle, Embed, Interaction, PartialEmoji
 from discord.ui import button, Button, InputText, Modal, View
 from github import Github
 from github.AuthenticatedUser import AuthenticatedUser
+from github.GithubException import GithubException
 from github.NamedUser import NamedUser
 from github.Repository import Repository
 
@@ -16,10 +17,16 @@ class RegisterModal(Modal):
         self.add_item(InputText(label="Github 토큰", placeholder="Personal Access Token"))
 
     async def callback(self, interaction: Interaction):
-        token = await self.bot.crypt.encrypt(self.children[0].value)
-        await self.bot.db.insert("User", (interaction.user.id, str(token)))
-        embed = Embed(title="성공", description="Github 계정이 연동되었습니다!", color=COLOR)
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        token = self.children[0].value
+        try:
+            github = Github(token)
+            me = github.get_user()
+            embed = Embed(title="성공", description=f"Github 계정이 연동되었습니다!\n연동된 계정: {me.login}", color=COLOR)
+            token_encrypted = await self.bot.crypt.encrypt(self.children[0].value)
+            await self.bot.db.insert("User", (interaction.user.id, str(token_encrypted)))
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+        except GithubException:
+            await interaction.response.send_message("잘못된 토큰입니다.", ephemeral=True)
 
 
 class RequireRegisterView(View):
