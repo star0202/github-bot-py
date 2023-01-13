@@ -8,7 +8,7 @@ from github.GithubException import UnknownObjectException
 from config import BAD, COLOR
 from utils.bot import Bot
 from utils.commands import slash_command
-from views.githubview import RegisterModal, RegisterRecommend, RepoControl, UserControl
+from views.githubview import RegisterModal, RepoControl, UserControl
 
 logger = getLogger(__name__)
 
@@ -60,11 +60,10 @@ class GithubCog(commands.Cog):
         if data:
             token = await self.bot.crypt.decrypt(data[1])
             github = Github(token)
-            view = UserControl(github.get_user(), github.get_user(user_id))
         else:
             github = Github()
-            view = RegisterRecommend(self.bot)
         user = github.get_user_by_id(github.get_user(user_id).id)
+        view = UserControl(self.bot, github.get_user(), user)
         embed = Embed(title="유저 정보", color=COLOR)
         embed.set_thumbnail(url=user.avatar_url)
         embed.add_field(name="이름", value=f"{user.name}([{user.login}]({user.html_url}))")
@@ -85,10 +84,9 @@ class GithubCog(commands.Cog):
         if data:
             token = await self.bot.crypt.decrypt(data[1])
             github = Github(token)
-            view = RepoControl(github.get_user(), github.get_repo(f"{repo_owner}/{repo_name}"))
         else:
             github = Github()
-            view = RegisterRecommend(self.bot)
+        view = RepoControl(self.bot, github.get_user(), github.get_repo(f"{repo_owner}/{repo_name}"))
         repo = github.get_repo(f"{repo_owner}/{repo_name}")
         embed = Embed(title="레포 정보", color=COLOR)
         embed.add_field(name="이름", value=f"{repo.name}([{repo.owner.login}]({repo.html_url}))")
