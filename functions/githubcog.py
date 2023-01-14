@@ -137,7 +137,7 @@ class GithubCog(commands.Cog):
                 repo += f"\n{r.owner.login}/[{r.name}]({r.html_url})"
             except IndexError:
                 pass
-        embed.add_field(name="유저", value=user)
+        embed.add_field(name="유저/조직", value=user)
         embed.add_field(name="레포", value=repo)
         await ctx.respond(embed=embed)
 
