@@ -129,7 +129,7 @@ class GithubCog(commands.Cog):
         repo = ""
         user_searched = github.search_users(query)
         repo_searched = github.search_repositories(query)
-        for i in range(3):
+        for i in range(5):
             try:
                 u: NamedUser = user_searched[i]
                 r: Repository = repo_searched[i]
