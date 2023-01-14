@@ -68,13 +68,22 @@ class GithubCog(commands.Cog):
             github = Github()
         user = github.get_user_by_id(github.get_user(user_id).id)
         view = UserControl(self.bot, github.get_user(), user)
-        embed = Embed(title="유저 정보", color=COLOR)
+        user_type = "유저" if is_user(user) else "조직"
+        embed = Embed(title=f"{user_type} 정보", color=COLOR)
         embed.set_thumbnail(url=user.avatar_url)
-        embed.add_field(name="이름", value=f"{user.name}([{user.login}]({user.html_url}))")
-        embed.add_field(name="팔로워 / 팔로잉", value=f"{user.followers} / {user.following} (명)")
+        embed.add_field(name="이름", value=f"{if_none_return(user.name, user.login)}([{user.login}]({user.html_url}))")
+        embed.add_field(name="팔로워 / 팔로잉", value=f"{user.followers} / {user.following} (명)"
+                        ) if is_user(user) else embed.add_field(name="팔로워", value=f"{user.followers} (명)")
         embed.add_field(name="공개 레포지토리", value=f"{user.public_repos}개")
         embed.add_field(name="소개", value=if_none_return(user.bio, "없음"))
         await ctx.respond(embed=embed, view=view)
+
+    @slash_command(name="조직", desciption="깃허브 조직 정보를 확인합니다.")
+    async def org_info(
+            self, ctx, org_id: Option(
+                str, name="아이디", description="확인할 조직의 아이디를 입력해주세요.")
+    ):
+        await self.user_info(ctx, org_id)
 
     @slash_command(name="레포", description="깃허브 레포 정보를 확인합니다.")
     async def repo_info(

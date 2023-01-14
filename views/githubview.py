@@ -4,10 +4,12 @@ from github import Github
 from github.AuthenticatedUser import AuthenticatedUser
 from github.GithubException import BadCredentialsException, GithubException
 from github.NamedUser import NamedUser
+from github.Organization import Organization
 from github.Repository import Repository
 
 from config import COLOR
 from utils.bot import Bot
+from utils.githubutils import is_user
 
 
 class RegisterModal(Modal):
@@ -48,7 +50,7 @@ class RequireRegisterView(View):
 
 
 class UserControl(RequireRegisterView):
-    def __init__(self, bot: Bot, me: AuthenticatedUser, user: NamedUser):
+    def __init__(self, bot: Bot, me: AuthenticatedUser, user: NamedUser | Organization):
         super().__init__(bot, me)
         self.user = user
         self.add_item(Button(label="🔗", url=user.html_url, style=ButtonStyle.url))
@@ -57,7 +59,7 @@ class UserControl(RequireRegisterView):
     async def follow(self, _, interaction: Interaction):
         if not self.login:
             return await interaction.response.send_message("계정을 연동해 주세요.", ephemeral=True)
-        if self.me.id == self.user.id:
+        if self.me.id == self.user.id and is_user(self.user):
             return await interaction.response.send_message("자기 자신을 팔로우할 수 없습니다.", ephemeral=True)
         if self.user in self.me.get_following():
             self.me.remove_from_following(self.user)
