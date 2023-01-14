@@ -4,15 +4,15 @@ from discord import ApplicationContext, Embed, Option
 from discord.ext import commands
 from github import Github
 from github.GithubException import UnknownObjectException
-from github.Repository import Repository
 from github.NamedUser import NamedUser
+from github.Repository import Repository
 
 from config import BAD, COLOR
 from utils.bot import Bot
 from utils.commands import slash_command
-from views.githubview import RegisterModal, RepoControl, UserControl
-from utils.utils import if_none_return
 from utils.githubutils import is_user
+from utils.utils import if_none_return
+from views.githubview import RegisterModal, RepoControl, UserControl, SearchView
 
 logger = getLogger(__name__)
 
