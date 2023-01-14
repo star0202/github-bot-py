@@ -133,8 +133,11 @@ class GithubCog(commands.Cog):
         for i in range(5):
             try:
                 u: NamedUser = user_searched[i]
-                r: Repository = repo_searched[i]
                 user += f"\n{if_none_return(u.name, u.login)}([{u.login}]({u.html_url}))"
+            except IndexError:
+                pass
+            try:
+                r: Repository = repo_searched[i]
                 repo += f"\n{r.owner.login}/[{r.name}]({r.html_url})"
             except IndexError:
                 pass
