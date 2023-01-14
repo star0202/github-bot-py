@@ -89,7 +89,7 @@ class GithubCog(commands.Cog):
         view = RepoControl(self.bot, github.get_user(), github.get_repo(f"{repo_owner}/{repo_name}"))
         repo = github.get_repo(f"{repo_owner}/{repo_name}")
         embed = Embed(title="레포 정보", color=COLOR)
-        embed.add_field(name="이름", value=f"{repo.name}([{repo.owner.login}]({repo.html_url}))")
+        embed.add_field(name="이름", value=f"{repo.owner.login}/[{repo.name}]({repo.html_url})")
         embed.add_field(name="언어", value=repo.language
                         ) if repo.language else embed.add_field(name="언어", value="알 수 없음")
         embed.add_field(name="설명", value=repo.description)
