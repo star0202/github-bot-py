@@ -4,6 +4,8 @@ from discord import ApplicationContext, Embed, Option
 from discord.ext import commands
 from github import Github
 from github.GithubException import UnknownObjectException
+from github.Repository import Repository
+from github.NamedUser import NamedUser
 
 from config import BAD, COLOR
 from utils.bot import Bot
@@ -103,6 +105,31 @@ class GithubCog(commands.Cog):
             license_name = "없음"
         embed.add_field(name="라이선스", value=license_name)
         await ctx.respond(embed=embed, view=view)
+
+    @slash_command(name="검색", description="깃허브 유저 또는 레포를 검색합니다.")
+    async def search(self, ctx: ApplicationContext, query: Option(str, name="검색어", description="검색할 내용을 입력해주세요.")):
+        data = await self.bot.db.select("User", ctx.user.id)
+        if data:
+            token = await self.bot.crypt.decrypt(data[1])
+            github = Github(token)
+        else:
+            github = Github()
+        embed = Embed(title="검색 결과", color=COLOR)
+        user = ""
+        repo = ""
+        user_searched = github.search_users(query)
+        repo_searched = github.search_repositories(query)
+        for i in range(3):
+            try:
+                u: NamedUser = user_searched[i]
+                r: Repository = repo_searched[i]
+                user += f"\n{u.name}([{u.login}]({u.html_url}))"
+                repo += f"\n{r.owner.login}/[{r.name}]({r.html_url})"
+            except IndexError:
+                pass
+        embed.add_field(name="유저", value=user)
+        embed.add_field(name="레포", value=repo)
+        await ctx.respond(embed=embed)
 
 
 def setup(bot: Bot):
