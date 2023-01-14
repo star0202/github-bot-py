@@ -11,6 +11,8 @@ from config import BAD, COLOR
 from utils.bot import Bot
 from utils.commands import slash_command
 from views.githubview import RegisterModal, RepoControl, UserControl
+from utils.utils import if_none_return
+from utils.githubutils import is_user
 
 logger = getLogger(__name__)
 
@@ -71,7 +73,7 @@ class GithubCog(commands.Cog):
         embed.add_field(name="이름", value=f"{user.name}([{user.login}]({user.html_url}))")
         embed.add_field(name="팔로워 / 팔로잉", value=f"{user.followers} / {user.following} (명)")
         embed.add_field(name="공개 레포지토리", value=f"{user.public_repos}개")
-        embed.add_field(name="소개", value=user.bio)
+        embed.add_field(name="소개", value=if_none_return(user.bio, "없음"))
         await ctx.respond(embed=embed, view=view)
 
     @slash_command(name="레포", description="깃허브 레포 정보를 확인합니다.")
@@ -92,9 +94,8 @@ class GithubCog(commands.Cog):
         repo = github.get_repo(f"{repo_owner}/{repo_name}")
         embed = Embed(title="레포 정보", color=COLOR)
         embed.add_field(name="이름", value=f"{repo.owner.login}/[{repo.name}]({repo.html_url})")
-        embed.add_field(name="언어", value=repo.language
-                        ) if repo.language else embed.add_field(name="언어", value="알 수 없음")
-        embed.add_field(name="설명", value=repo.description)
+        embed.add_field(name="언어", value=if_none_return(repo.language, "없음"))
+        embed.add_field(name="설명", value=if_none_return(repo.description, "없음"))
         embed.add_field(name="스타", value=f"{repo.stargazers_count}개")
         embed.add_field(name="포크", value=f"{repo.forks_count}개")
         embed.add_field(name="PR", value=f"{len(list(repo.get_pulls()))}개")
@@ -123,7 +124,7 @@ class GithubCog(commands.Cog):
             try:
                 u: NamedUser = user_searched[i]
                 r: Repository = repo_searched[i]
-                user += f"\n{u.name}([{u.login}]({u.html_url}))"
+                user += f"\n{if_none_return(u.name, u.login)}([{u.login}]({u.html_url}))"
                 repo += f"\n{r.owner.login}/[{r.name}]({r.html_url})"
             except IndexError:
                 pass

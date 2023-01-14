@@ -1,6 +1,6 @@
 from datetime import datetime
 from time import mktime
-from typing import Optional
+from typing import Any, Optional
 
 from discord import Embed, SelectOption
 from pytz import timezone
@@ -30,3 +30,7 @@ def help_maker(raw: dict, color: int, is_embed: Optional[bool] = True) -> list[E
             )
         )
     return embed_list
+
+
+def if_none_return(value: Any, return_value: Any) -> Any:
+    return value if value else return_value
