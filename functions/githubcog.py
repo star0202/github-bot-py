@@ -60,6 +60,8 @@ class GithubCog(commands.Cog):
             self, ctx: ApplicationContext, user_id: Option(
                 str, name="아이디", description="확인할 유저의 아이디를 입력해주세요.")
     ):
+        embed = Embed(title="탐색 중..", color=COLOR)
+        interaction = await ctx.respond(embed=embed)
         data = await self.bot.db.select("User", ctx.user.id)
         if data:
             token = await self.bot.crypt.decrypt(data[1])
@@ -76,7 +78,7 @@ class GithubCog(commands.Cog):
                         ) if is_user(user) else embed.add_field(name="팔로워", value=f"{user.followers} (명)")
         embed.add_field(name="공개 레포지토리", value=f"{user.public_repos}개")
         embed.add_field(name="소개", value=if_none_return(user.bio, "없음"))
-        await ctx.respond(embed=embed, view=view)
+        await interaction.edit_original_response(embed=embed, view=view)
 
     @slash_command(name="조직", desciption="깃허브 조직 정보를 확인합니다.")
     async def org_info(
@@ -93,6 +95,8 @@ class GithubCog(commands.Cog):
             repo_name: Option(
                 str, name="이름", description="확인할 레포의 이름을 입력해주세요.")
     ):
+        embed = Embed(title="탐색 중..", color=COLOR)
+        interaction = await ctx.respond(embed=embed)
         data = await self.bot.db.select("User", ctx.user.id)
         if data:
             token = await self.bot.crypt.decrypt(data[1])
@@ -114,16 +118,13 @@ class GithubCog(commands.Cog):
         except UnknownObjectException:
             license_name = "없음"
         embed.add_field(name="라이선스", value=license_name)
-        await ctx.respond(embed=embed, view=view)
+        await interaction.edit_original_response(embed=embed, view=view)
 
     @slash_command(name="검색", description="깃허브 유저 또는 레포를 검색합니다.")
     async def search(self, ctx: ApplicationContext, query: Option(str, name="검색어", description="검색할 내용을 입력해주세요.")):
-        data = await self.bot.db.select("User", ctx.user.id)
-        if data:
-            token = await self.bot.crypt.decrypt(data[1])
-            github = Github(token)
-        else:
-            github = Github()
+        embed = Embed(title="검색 중..", color=COLOR)
+        interaction = await ctx.respond(embed=embed)
+        github = Github()
         embed = Embed(title="검색 결과", color=COLOR)
         user = ""
         repo = ""
@@ -143,7 +144,7 @@ class GithubCog(commands.Cog):
                 pass
         embed.add_field(name="유저/조직", value=user)
         embed.add_field(name="레포", value=repo)
-        await ctx.respond(embed=embed, view=view)
+        await interaction.edit_original_response(embed=embed, view=view)
 
 
 def setup(bot: Bot):
