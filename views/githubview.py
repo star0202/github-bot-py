@@ -94,3 +94,11 @@ class RepoControl(RequireRegisterView):
         else:
             self.me.add_to_starred(self.repo)
             await interaction.response.send_message("스타!", ephemeral=True)
+
+
+class SearchView(View):
+    def __init__(self, query: str):
+        super().__init__(timeout=60)
+        self.query = query
+        self.add_item(Button(label="유저/조직🔗", url=f"https://github.com/search?q={query}&type=users"))
+        self.add_item(Button(label="레포🔗", url=f"https://github.com/search?q={query}&type=repositories"))

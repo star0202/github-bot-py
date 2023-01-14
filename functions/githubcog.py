@@ -129,6 +129,7 @@ class GithubCog(commands.Cog):
         repo = ""
         user_searched = github.search_users(query)
         repo_searched = github.search_repositories(query)
+        view = SearchView(query)
         for i in range(5):
             try:
                 u: NamedUser = user_searched[i]
@@ -139,7 +140,7 @@ class GithubCog(commands.Cog):
                 pass
         embed.add_field(name="유저/조직", value=user)
         embed.add_field(name="레포", value=repo)
-        await ctx.respond(embed=embed)
+        await ctx.respond(embed=embed, view=view)
 
 
 def setup(bot: Bot):
